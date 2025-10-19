@@ -1,0 +1,72 @@
+appId: deepfundai.browser
+productName: DeepFundAIBrowser
+directories:
+  buildResources: dist
+  output: release
+files:
+  - .next/**/*
+  - package.json
+  - node_modules/**/*
+  - assets/**/*
+  - dist/**/*
+  - public/**/*
+  - server.js
+  - electron-update.yml
+  - next.config.js
+  - .env.production
+  - from: electron/renderer
+    to: renderer
+    filter: ["**/*"]
+
+extraMetadata:
+  main: dist/electron/main/index.mjs
+asarUnpack:
+  - electron-update.yml
+
+mac:
+  icon: assets/icons/logo.png
+  target:
+    - target: dmg
+      arch: universal
+  identity: null
+  category: "public.app-category.developer-tools"
+  type: "distribution"
+  hardenedRuntime: true
+  entitlements: "assets/entitlements.mac.plist"
+  entitlementsInherit: "assets/entitlements.mac.plist"
+  gatekeeperAssess: false
+
+win:
+  icon: assets/icons/logo.png
+  target:
+    - nsis
+  signDlls: false
+  artifactName: ${name}-${version}-${os}-${arch}.${ext}
+
+linux:
+  icon: assets/icons/icon.png
+  target:
+    - AppImage
+    - deb
+  artifactName: ${name}-${version}-${os}-${arch}.${ext}
+  category: Development
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ${productName}
+  artifactName: ${name}-${version}-${os}-${arch}-setup.${ext}
+
+npmRebuild: false
+
+publish:
+  provider: github
+  owner: deepfundai
+  repo: browser
+  private: false
+  releaseType: release
+
+electronDownload:
+  mirror: https://npmmirror.com/mirrors/electron/

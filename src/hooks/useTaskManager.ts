@@ -1,0 +1,162 @@
+import { useState, useCallback } from 'react';
+import { Task, DisplayMessage } from '@/models';
+import { taskStorage } from '@/lib/taskStorage';
+
+interface UseTaskManagerReturn {
+  tasks: Task[];
+  currentTask: Task | undefined;
+  messages: DisplayMessage[];
+  currentTaskId: string;
+  isHistoryMode: boolean;
+
+  // Task operations
+  setCurrentTaskId: (taskId: string) => void;
+  updateTask: (taskId: string, updates: Partial<Task>) => void;
+  createTask: (taskId: string, initialData: Partial<Task>) => void;
+  updateMessages: (taskId: string, messages: DisplayMessage[]) => void;
+  addToolHistory: (taskId: string, toolData: any) => void;
+
+  // History mode
+  enterHistoryMode: (task: Task) => void;
+  exitHistoryMode: () => void;
+
+  // Reset
+  reset: () => void;
+}
+
+export const useTaskManager = (): UseTaskManagerReturn => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [currentTaskId, setCurrentTaskId] = useState<string>('');
+  const [isHistoryMode, setIsHistoryMode] = useState<boolean>(false);
+
+  // Computed properties
+  const currentTask = tasks.find(task => task.id === currentTaskId);
+  const messages = currentTask?.messages || [];
+
+  // Automatically save tasks to IndexedDB
+  const saveTask = useCallback(async (task: Task) => {
+    try {
+      await taskStorage.saveTask(task);
+    } catch (error) {
+      console.error('Failed to save task:', error);
+    }
+  }, []);
+
+  // Update task
+  const updateTask = useCallback((taskId: string, updates: Partial<Task>) => {
+    if (!taskId || isHistoryMode) return;
+
+    setTasks(prevTasks => {
+      const existingTaskIndex = prevTasks.findIndex(task => task.id === taskId);
+      if (existingTaskIndex >= 0) {
+        const updatedTasks = [...prevTasks];
+        const updatedTask = {
+          ...updatedTasks[existingTaskIndex],
+          ...updates,
+          updatedAt: new Date()
+        };
+        updatedTasks[existingTaskIndex] = updatedTask;
+
+        // Asynchronous save
+        saveTask(updatedTask);
+
+        return updatedTasks;
+      }
+      return prevTasks;
+    });
+  }, [isHistoryMode, saveTask]);
+
+  // Create new task
+  const createTask = useCallback((taskId: string, initialData: Partial<Task>) => {
+    if (isHistoryMode) return;
+
+    const newTask: Task = {
+      id: taskId,
+      name: `Task ${taskId.slice(0, 8)}`,
+      messages: [],
+      taskType: 'normal', // Default to normal task
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...initialData
+    };
+
+    setTasks(prevTasks => {
+      // Check if already exists
+      const exists = prevTasks.some(task => task.id === taskId);
+      if (exists) return prevTasks;
+
+      // Asynchronous save
+      saveTask(newTask);
+
+      return [...prevTasks, newTask];
+    });
+  }, [isHistoryMode, saveTask]);
+
+  // Update messages
+  const updateMessages = useCallback((taskId: string, messages: DisplayMessage[]) => {
+    updateTask(taskId, { messages });
+  }, [updateTask]);
+
+  // Add tool history
+  const addToolHistory = useCallback((taskId: string, toolData: any) => {
+    setTasks(prevTasks => {
+      const existingTaskIndex = prevTasks.findIndex(task => task.id === taskId);
+      if (existingTaskIndex >= 0) {
+        const updatedTasks = [...prevTasks];
+        const currentToolHistory = updatedTasks[existingTaskIndex].toolHistory || [];
+        const updatedTask = {
+          ...updatedTasks[existingTaskIndex],
+          toolHistory: [...currentToolHistory, toolData],
+          updatedAt: new Date()
+        };
+        updatedTasks[existingTaskIndex] = updatedTask;
+
+        // Asynchronous save
+        saveTask(updatedTask);
+
+        return updatedTasks;
+      }
+      return prevTasks;
+    });
+  }, [saveTask]);
+
+  // Enter history mode
+  const enterHistoryMode = useCallback((task: Task) => {
+    setIsHistoryMode(true);
+    setCurrentTaskId(task.id);
+    setTasks([task]);
+  }, []);
+
+  // Exit history mode
+  const exitHistoryMode = useCallback(() => {
+    setIsHistoryMode(false);
+    setCurrentTaskId('');
+    setTasks([]);
+  }, []);
+
+  // Reset all state
+  const reset = useCallback(() => {
+    setTasks([]);
+    setCurrentTaskId('');
+    setIsHistoryMode(false);
+  }, []);
+
+  return {
+    tasks,
+    currentTask,
+    messages,
+    currentTaskId,
+    isHistoryMode,
+
+    setCurrentTaskId,
+    updateTask,
+    createTask,
+    updateMessages,
+    addToolHistory,
+
+    enterHistoryMode,
+    exitHistoryMode,
+
+    reset
+  };
+};

@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "outDir": "dist",
+      "lib": ["es2019"],
+      "target": "es2019",
+      "isolatedModules": false,
+      "noEmit": false,
+      "skipLibCheck": true,
+      "noImplicitAny": false,
+      "suppressImplicitAnyIndexErrors": false,
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "noEmitOnError": false
+    },
+    "include": ["server.ts"],
+    "exclude": ["electron", "node_modules"]
+  }

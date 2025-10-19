@@ -1,0 +1,307 @@
+/* Loading Page Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #0c1426 0%, #020617 100%);
+  color: #f8fafc;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(6, 182, 212, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Logo Section */
+.logo-section {
+  margin-bottom: 3rem;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-text {
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: baseline;
+  gap: 0.1em;
+  animation: logoGlow 2s ease-in-out infinite alternate;
+}
+
+.logo-ai {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+  animation: aiPulse 3s ease-in-out infinite;
+}
+
+.logo-f {
+  background: linear-gradient(135deg, #64748b, #334155);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'Menlo', 'Monaco', 'Cascadia Code', monospace;
+  font-weight: 900;
+  font-style: italic;
+  transform: rotate(-3deg);
+  text-shadow: 0 0 25px rgba(100, 116, 139, 0.5);
+  animation: fBounce 2.5s ease-in-out infinite;
+}
+
+.logo-number {
+  background: linear-gradient(135deg, #06b6d4, #0891b2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 900;
+  font-variant-numeric: lining-nums;
+  text-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+  animation: numberGlow 2s ease-in-out infinite alternate;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #64748b;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 10px rgba(100, 116, 139, 0.3);
+}
+
+/* Loading Section */
+.loading-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+/* Spinner */
+.loading-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+
+.spinner-ring:nth-child(1) {
+  border-top-color: #1d4ed8;
+  border-right-color: rgba(29, 78, 216, 0.3);
+  animation-delay: 0s;
+}
+
+.spinner-ring:nth-child(2) {
+  border-top-color: #0891b2;
+  border-right-color: rgba(8, 145, 178, 0.3);
+  animation-delay: -0.4s;
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+}
+
+.spinner-ring:nth-child(3) {
+  border-top-color: #334155;
+  border-right-color: rgba(51, 65, 85, 0.3);
+  animation-delay: -0.8s;
+  width: 40%;
+  height: 40%;
+  top: 30%;
+  left: 30%;
+}
+
+/* Loading Text */
+.loading-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.main-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #f1f5f9;
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+.sub-text {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 300;
+}
+
+/* Progress Section */
+.progress-section {
+  width: 100%;
+  max-width: 300px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: #334155;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1d4ed8, #0891b2);
+  border-radius: 2px;
+  animation: progressMove 3s ease-in-out infinite;
+  width: 0%;
+  box-shadow: 0 0 10px rgba(29, 78, 216, 0.3);
+}
+
+/* Animations */
+@keyframes logoGlow {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes aiPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.3) saturate(1.2);
+  }
+}
+
+@keyframes fBounce {
+  0%, 100% {
+    transform: rotate(-5deg) translateY(0);
+  }
+  25% {
+    transform: rotate(-3deg) translateY(-3px);
+  }
+  75% {
+    transform: rotate(-7deg) translateY(2px);
+  }
+}
+
+@keyframes numberGlow {
+  0% {
+    transform: scale(1);
+    filter: brightness(1) hue-rotate(0deg);
+  }
+  50% {
+    transform: scale(1.02);
+    filter: brightness(1.2) hue-rotate(10deg);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1.1) hue-rotate(-5deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes progressMove {
+  0% {
+    width: 0%;
+    transform: translateX(-100%);
+  }
+  50% {
+    width: 70%;
+    transform: translateX(0%);
+  }
+  100% {
+    width: 100%;
+    transform: translateX(0%);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 2.5rem;
+    gap: 0.05em;
+  }
+
+  .logo-ai, .logo-f, .logo-number {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+  }
+
+  .loading-container {
+    padding: 1rem;
+  }
+
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+  }
+}

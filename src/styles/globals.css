@@ -1,0 +1,182 @@
+@import "tailwindcss";
+@import "./markdown.css";
+@import url('https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap');
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme {
+  --background-image-main-view: url('/imgs/bg-main.png');
+  --background-image-main-view-header: linear-gradient(-45deg, #3E3BD9 0%, #7B25F9 100%);
+  --background-image-main-view-footer: url('/imgs/bg-footer.png');
+
+  --background-image-icon-bg-common: linear-gradient(223deg, #2D314F 0%, #384167 100%);
+  --background-image-icon-bg-voice-open: linear-gradient(184deg, #3E3BD9 0%, #7B25F9 86%);
+
+
+  --shadow-tool-hover: inset 0px 0px 12px 0px rgba(150,151,255,0.4);
+  --color-bg-tool-hover: rgba(89,89,150,0.30);
+  --color-border-tool-hover: rgba(113,113,208,0.5);
+
+
+  --color-border-view-window-edge: rgba(96,109,140,1);
+  --color-icon-bg-hangup: #911B1B;
+  --color-view-window-edge: #E9E7FA;
+  --color-main-view-hover: rgba(0, 0, 0, 0.6);
+
+  --my-font: "Berkshire Swash";
+
+  /* Background colors */
+  /* Header */
+  --background-image-header: linear-gradient(180deg, rgba(30,29,46,0.80) 12%, rgba(30,29,46,0.80) 100%);
+  /* Message */
+  --background-image-message: linear-gradient(180deg, #24294A 0%, #263058 100%);
+  /* Jarvis */
+  --background-image-jarvis: url('/imgs/jarvis.png');
+  /* Task execution button background */
+  --background-image-ask-status: linear-gradient(184deg, #3E3BD9 0%, #7B25F9 86%);
+  /* Deep thinking */
+  --background-color-thinking: #1D273F;
+  /* Steps */
+  --background-color-step: #7364F5;
+  /* Tool call background */
+  --background-color-tool-call: #191E34;
+
+
+  /* Border colors */
+  --color-border-message: rgba(78,94,132,1);
+
+
+  /* 文本色（白版） */
+  /* 一级文本色 /标题 正文 */
+  --color-text-01: #131C30;
+  /* 二级文本色 / 正文 */
+  --color-text-02-01: #2A354E;
+  /* 二级文本色 / 正文 辅文 */
+  --color-text-03: #545E71;
+  /* 三级文本色 / 辅文 */
+  --color-text-04: #A9B2BE;
+  /* 主题本色 / 正文 辅文 */
+  --color-text-05: #636FFF;
+  /* 特殊文本色一 */
+  --color-text-06: #FF2436;
+  /* 特殊文本色二 */
+  --color-text-07: #FF661A;
+  /* 特殊文本色三 */
+  --color-text-08: #FF9500;
+  /* 特殊文本色四 */
+  --color-text-09: #07AB4B;
+  /* 异常文本色 */
+  --color-text-10: #E63C47;
+  /* 会话面板文本色 */
+  --color-text-11: #2A354E;
+  /* 指标上涨 */
+  --color-text-12: #FF2436;
+  /* 指标下降 */
+  --color-text-13: #07AB4B;
+
+  /* 文本色（黑版） */
+  /* 黑版一级文本色 /标题 正文 */
+  --color-text-01-dark: #FAFBFC;
+  /* 黑版二级文本色 / 正文 */
+  --color-text-02-01-dark: #F2F5FA;
+  --color-text-02-02-dark: #FFD993;
+  /* 黑版二级文本色 / 正文 辅文 */
+  --color-text-03-dark: #C4CAD5;
+  /* 黑版三级文本色 / 辅文 */
+  --color-text-04-dark: #828FA1;
+  /* 黑版主题本色 / 正文 辅文 */
+  --color-text-05-dark: #7E8DFF;
+  /* 黑版特殊文本色一 */
+  --color-text-06-dark: #FF2436;
+  /* 黑版特殊文本色二 */
+  --color-text-07-dark: #FF661A;
+  /* 黑版特殊文本色三 */
+  --color-text-08-dark: #FF9500;
+  /* 黑版特殊文本色四 */
+  --color-text-09-dark: #07AB4B;
+  /* 黑版异常文本色 */
+  --color-text-10-dark: #E63C47;
+  /* 会话面板文本色 */
+  --color-text-11-dark: #F2F5FA;
+  /* 消息文本色 */
+  --color-text-12-dark: #A9B2BE;
+
+
+
+}
+
+.gradient-border {
+  position: relative;
+  display: inline-block;
+  padding: 1px; /* 边框宽度 */
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8797FB, #DF3B77, #7778FD);
+}
+
+.gradient-border textarea {
+  border: none;
+  outline: none;
+  border-radius: 12px;
+  font-size: 14px;
+  resize: none !important;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  --font-mono: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+}
+
+html,
+body,
+#__next {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 50%, rgba(24, 41, 83, 0.6) 0%, transparent 40%),
+              radial-gradient(circle at 80% 50%, rgba(87, 24, 100, 0.6) 0%, transparent 40%),
+              linear-gradient(to bottom, #0a0a23 0%, #000000 100%);
+        background-color: #0a0a23;
+}
+
+/* 滚动槽 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: none;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 6px;
+  /* background: rgba(255, 255, 255, 0.5); */
+}
+
+/* 滚动条滑块 */
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.01);
+  -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 滚动条交汇处 */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
