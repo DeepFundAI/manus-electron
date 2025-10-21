@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Layout, Typography, Card, Button, Space, Spin, message } from 'antd';
-import { 
-  FileTextOutlined, 
-  DownloadOutlined, 
+import { Layout, Typography, Card, Button, Space, Spin, App } from 'antd';
+import {
+  FileTextOutlined,
+  DownloadOutlined,
   CopyOutlined,
   CodeOutlined,
   FileOutlined
@@ -22,6 +22,7 @@ interface FileViewState {
 }
 
 export default function FileView() {
+  const { message } = App.useApp();
   const [fileState, setFileState] = useState<FileViewState>({
     content: '',
     isLoading: true,

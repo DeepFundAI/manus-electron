@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Drawer, List, Button, Switch, Popconfirm, Tag, Empty, message } from 'antd';
+import { Drawer, List, Button, Switch, Popconfirm, Tag, Empty, App } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, PlayCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useScheduledTaskStore } from '@/stores/scheduled-task-store';
 import { ScheduledTask } from '@/models';
@@ -10,6 +10,7 @@ import { zhCN } from 'date-fns/locale';
  * Scheduled task list panel
  */
 export const ScheduledTaskListPanel: React.FC = () => {
+  const { message } = App.useApp();
   const {
     showListPanel,
     setShowListPanel,

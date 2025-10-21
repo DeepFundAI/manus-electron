@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, List, Modal, Drawer, message, Tooltip, Space, Tag, Popconfirm } from 'antd';
+import { Button, Input, List, Modal, Drawer, Tooltip, Space, Tag, Popconfirm, App } from 'antd';
 import { SearchOutlined, DeleteOutlined, EyeOutlined, ClearOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { Task, TaskStatus, TaskType } from '@/models';
 import { taskStorage } from '@/lib/taskStorage';
@@ -39,6 +39,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
   isTaskDetailMode = false,
   scheduledTaskId
 }) => {
+  const { message } = App.useApp();
   const [historyItems, setHistoryItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState('');

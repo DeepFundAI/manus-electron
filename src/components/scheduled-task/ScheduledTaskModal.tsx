@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Switch, message } from 'antd';
+import { Modal, Form, Input, Switch, App } from 'antd';
 import { TaskStepEditor } from './TaskStepEditor';
 import { ScheduleConfigEditor } from './ScheduleConfigEditor';
 import { useScheduledTaskStore } from '@/stores/scheduled-task-store';
@@ -9,6 +9,7 @@ import { TaskStep, ScheduleConfig } from '@/models';
  * Scheduled task create/edit modal
  */
 export const ScheduledTaskModal: React.FC = () => {
+  const { message } = App.useApp();
   const [form] = Form.useForm();
 
   const {
