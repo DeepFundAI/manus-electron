@@ -15,6 +15,7 @@ interface UseTaskManagerReturn {
   createTask: (taskId: string, initialData: Partial<Task>) => void;
   updateMessages: (taskId: string, messages: DisplayMessage[]) => void;
   addToolHistory: (taskId: string, toolData: any) => void;
+  replaceTaskId: (oldTaskId: string, newTaskId: string) => void;
 
   // History mode
   enterHistoryMode: (task: Task) => void;
@@ -120,6 +121,43 @@ export const useTaskManager = (): UseTaskManagerReturn => {
     });
   }, [saveTask]);
 
+  // Replace task ID (for temporary task -> real task transition)
+  const replaceTaskId = useCallback((oldTaskId: string, newTaskId: string) => {
+    if (isHistoryMode) return;
+
+    setTasks(prevTasks => {
+      const existingTaskIndex = prevTasks.findIndex(task => task.id === oldTaskId);
+      if (existingTaskIndex >= 0) {
+        const updatedTasks = [...prevTasks];
+        // Create new task object with new ID, keep all other data
+        const newTask = {
+          ...updatedTasks[existingTaskIndex],
+          id: newTaskId,
+          updatedAt: new Date()
+        };
+
+        // Replace old task with new task
+        updatedTasks[existingTaskIndex] = newTask;
+
+        // Save new task to IndexedDB
+        saveTask(newTask);
+
+        // Delete old temporary task from IndexedDB
+        taskStorage.deleteTask(oldTaskId).catch(error => {
+          console.error('Failed to delete temporary task:', error);
+        });
+
+        return updatedTasks;
+      }
+      return prevTasks;
+    });
+
+    // Update currentTaskId if it matches the old ID
+    if (currentTaskId === oldTaskId) {
+      setCurrentTaskId(newTaskId);
+    }
+  }, [isHistoryMode, saveTask, currentTaskId]);
+
   // Enter history mode
   const enterHistoryMode = useCallback((task: Task) => {
     setIsHistoryMode(true);
@@ -153,6 +191,7 @@ export const useTaskManager = (): UseTaskManagerReturn => {
     createTask,
     updateMessages,
     addToolHistory,
+    replaceTaskId,
 
     enterHistoryMode,
     exitHistoryMode,

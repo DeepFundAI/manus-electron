@@ -3,11 +3,14 @@ import { BrowserAgent, FileAgent } from "@jarvis-agent/electron";
 import type { EkoResult } from "@jarvis-agent/core/types";
 import { BrowserWindow, WebContentsView, app } from "electron";
 import path from "node:path";
+import { ConfigManager } from "../utils/config-manager";
 
 export class EkoService {
   private eko: Eko | null = null;
   private mainWindow: BrowserWindow;
   private detailView: WebContentsView;
+  private mcpClient!: SimpleSseMcpClient;
+  private agents!: any[];
 
   constructor(mainWindow: BrowserWindow, detailView: WebContentsView) {
     this.mainWindow = mainWindow;
@@ -15,79 +18,11 @@ export class EkoService {
     this.initializeEko();
   }
 
-  private initializeEko() {
-    console.log(process.env)
-    // LLMs configuration - read from environment variables
-    const llms: LLMs = {
-      default: {
-        provider: "deepseek",
-        model: "deepseek-chat",
-        apiKey: process.env.DEEPSEEK_API_KEY || "",
-        config: {
-          baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com/v1",
-          maxTokens: 8192,
-          mode: 'regular',
-        },
-
-        fetch: (url, options) => {
-          // Intercept request and add thinking parameter
-          const body = JSON.parse((options?.body as string) || '{}');
-          body.thinking = { type: "disabled" };
-
-          Log.info('Deepseek request options:\n', body);
-
-          return fetch(url, {
-            ...options,
-            body: JSON.stringify(body)
-          });
-        }
-      },
-      "qwen-vl": {
-        provider: "openai",
-        model: "qwen-vl-max-2025-08-13",
-        apiKey: process.env.BAILIAN_API_KEY || "", // Use Bailian API key from environment
-        config: {
-          baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
-          maxTokens: 16000,
-          timeout: 60000,
-          temperature: 0.7
-        },
-        fetch: (url, options) => {
-          Log.info('Vision model request parameters', options)
-          return fetch(url, options);
-        }
-      },
-      'open-router': {
-        provider: "openrouter",
-        model: "openai/gpt-5-mini",
-        apiKey: process.env.OPENROUTER_API_KEY || "",
-        config: {
-          // baseURL: "https://openai-proxy.awsv.cn/v1",
-        },
-    },
-    };
-
-    // Get correct application path
-    const appPath = app.isPackaged
-      ? path.join(app.getPath('userData'), 'static')  // Packaged path
-      : path.join(process.cwd(), 'public', 'static');    // Development environment path
-
-    Log.info(`FileAgent working path: ${appPath}`);
-
-    // MCP client configuration - configure based on your MCP server address
-    const sseUrl = "http://localhost:5173/api/mcp/sse";
-    let mcpClient = new SimpleSseMcpClient(sseUrl);
-
-    const echartMcpUrl = "http://localhost:3033/sse";
-    const echartMcpClient = new SimpleSseMcpClient(echartMcpUrl);
-
-
-
-    // Create agents - can now use FileAgent since we're in Node.js environment
-    const agents = [new BrowserAgent(this.detailView, mcpClient), new FileAgent(this.detailView, appPath)];
-
-    // Stream callback handler
-    const callback = {
+  /**
+   * Create stream callback handler
+   */
+  private createCallback() {
+    return {
       onMessage: (message: StreamCallbackMessage): Promise<void> => {
         Log.info('EkoService stream callback:', message);
 
@@ -143,10 +78,74 @@ export class EkoService {
         console.log('EkoService human callback:', message);
       }
     };
+  }
 
-    // Initialize Eko instance
-    this.eko = new Eko({ llms, agents, callback });
-    console.log('EkoService initialized with FileAgent support');
+  private initializeEko() {
+    // Get LLMs configuration from ConfigManager
+    // Priority: user config > env > default
+    const configManager = ConfigManager.getInstance();
+    const llms: LLMs = configManager.getLLMsConfig();
+
+    // Get correct application path
+    const appPath = app.isPackaged
+      ? path.join(app.getPath('userData'), 'static')  // Packaged path
+      : path.join(process.cwd(), 'public', 'static');    // Development environment path
+
+    Log.info(`FileAgent working path: ${appPath}`);
+
+    // MCP client configuration - configure based on your MCP server address
+    const sseUrl = "http://localhost:5173/api/mcp/sse";
+    this.mcpClient = new SimpleSseMcpClient(sseUrl);
+
+    // Create agents - can now use FileAgent since we're in Node.js environment
+    this.agents = [new BrowserAgent(this.detailView, this.mcpClient), new FileAgent(this.detailView, appPath)];
+
+    // Create callback and initialize Eko instance
+    const callback = this.createCallback();
+    this.eko = new Eko({ llms, agents: this.agents, callback });
+    Log.info('EkoService initialized with LLMs:', llms.default?.model);
+  }
+
+  /**
+   * Reload LLM configuration and reinitialize Eko instance
+   * Called when user changes model configuration in UI
+   */
+  public reloadConfig(): void {
+    Log.info('Reloading EkoService configuration...');
+
+    // Abort all running tasks before reloading
+    if (this.eko) {
+      const allTaskIds = this.eko.getAllTaskId();
+      allTaskIds.forEach(taskId => {
+        try {
+          this.eko!.abortTask(taskId, 'config-reload');
+        } catch (error) {
+          Log.error(`Failed to abort task ${taskId}:`, error);
+        }
+      });
+    }
+
+    // Get new LLMs configuration
+    const configManager = ConfigManager.getInstance();
+    const llms: LLMs = configManager.getLLMsConfig();
+
+    Log.info('New LLMs config:', llms.default?.model);
+
+    // Create new Eko instance with updated config and fresh callback
+    const callback = this.createCallback();
+    this.eko = new Eko({ llms, agents: this.agents, callback });
+
+    Log.info('EkoService configuration reloaded successfully');
+
+    // Notify frontend about config reload
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) {
+      return;
+    }
+
+    this.mainWindow.webContents.send('eko-config-reloaded', {
+      model: llms.default?.model,
+      provider: llms.default?.provider
+    });
   }
 
   /**
@@ -154,17 +153,41 @@ export class EkoService {
    */
   async run(message: string): Promise<EkoResult | null> {
     if (!this.eko) {
-      throw new Error('Eko service not initialized');
+      const errorMsg = 'Eko service not initialized';
+      Log.error(errorMsg);
+      this.sendErrorToFrontend(errorMsg);
+      return null;
     }
-    
+
     console.log('EkoService running task:', message);
     let result = null;
     try {
       result = await this.eko.run(message);
-    } catch (error) {
+    } catch (error: any) {
       Log.error('EkoService run error:', error);
+
+      // Extract error message
+      const errorMessage = error?.message || error?.toString() || 'Unknown error occurred';
+      this.sendErrorToFrontend(errorMessage, error);
     }
     return result;
+  }
+
+  /**
+   * Send error message to frontend
+   */
+  private sendErrorToFrontend(errorMessage: string, error?: any, taskId?: string): void {
+    if (!this.mainWindow || this.mainWindow.isDestroyed()) {
+      Log.warn('Main window destroyed, cannot send error message');
+      return;
+    }
+
+    this.mainWindow.webContents.send('eko-stream-message', {
+      type: 'error',
+      error: errorMessage,
+      detail: error?.stack || error?.toString() || errorMessage,
+      taskId: taskId // Include taskId if available
+    });
   }
 
   /**
@@ -172,14 +195,20 @@ export class EkoService {
    */
   async modify(taskId: string, message: string): Promise<EkoResult | null> {
     if (!this.eko) {
-      throw new Error('Eko service not initialized');
+      const errorMsg = 'Eko service not initialized';
+      Log.error(errorMsg);
+      this.sendErrorToFrontend(errorMsg, undefined, taskId);
+      return null;
     }
+
     let result = null;
     try {
       await this.eko.modify(taskId, message);
       result = await this.eko.execute(taskId);
-    } catch (error) {
+    } catch (error: any) {
       Log.error('EkoService modify error:', error);
+      const errorMessage = error?.message || error?.toString() || 'Failed to modify task';
+      this.sendErrorToFrontend(errorMessage, error, taskId);
     }
     return result;
   }
@@ -187,13 +216,23 @@ export class EkoService {
   /**
    * Execute task
    */
-  async execute(taskId: string): Promise<EkoResult> {
+  async execute(taskId: string): Promise<EkoResult | null> {
     if (!this.eko) {
-      throw new Error('Eko service not initialized');
+      const errorMsg = 'Eko service not initialized';
+      Log.error(errorMsg);
+      this.sendErrorToFrontend(errorMsg, undefined, taskId);
+      return null;
     }
 
     console.log('EkoService executing task:', taskId);
-    return await this.eko.execute(taskId);
+    try {
+      return await this.eko.execute(taskId);
+    } catch (error: any) {
+      Log.error('EkoService execute error:', error);
+      const errorMessage = error?.message || error?.toString() || 'Failed to execute task';
+      this.sendErrorToFrontend(errorMessage, error, taskId);
+      return null;
+    }
   }
 
   /**

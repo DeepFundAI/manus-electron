@@ -34,6 +34,7 @@ export default function main() {
         createTask,
         updateMessages,
         addToolHistory,
+        replaceTaskId,
         enterHistoryMode,
     } = useTaskManager();
 
@@ -349,47 +350,60 @@ export default function main() {
             const updatedMessages = messageProcessorRef.current.processStreamMessage(message);
             console.log('Updated message list:', updatedMessages);
 
-            // Set task ID (if not already set)
-            if (message.taskId && !currentTaskId) {
+            // Handle task ID replacement: temporary task -> real task
+            const isCurrentTaskTemporary = taskIdRef.current?.startsWith('temp-');
+            const hasRealTaskId = message.taskId && !message.taskId.startsWith('temp-');
+
+            if (isCurrentTaskTemporary && hasRealTaskId) {
+                const tempTaskId = taskIdRef.current;
+                const realTaskId = message.taskId;
+
+                console.log(`Replacing temporary task ${tempTaskId} with real task ${realTaskId}`);
+
+                // Replace task ID
+                replaceTaskId(tempTaskId, realTaskId);
+
+                // Update taskIdRef
+                taskIdRef.current = realTaskId;
+
+                // Update task with new workflow info if available
+                if (message.type === 'workflow' && message.workflow?.name) {
+                    updateTask(realTaskId, {
+                        name: message.workflow.name,
+                        workflow: message.workflow,
+                        messages: updatedMessages
+                    });
+                } else {
+                    updateTask(realTaskId, { messages: updatedMessages });
+                }
+
+                return; // Exit early, task ID has been replaced
+            }
+
+            // Set task ID (if not already set and not temporary)
+            if (message.taskId && !currentTaskId && !message.taskId.startsWith('temp-')) {
                 setCurrentTaskId(message.taskId);
             }
 
             // Update or create task
             const taskIdToUpdate = message.taskId || taskIdRef.current;
             if (taskIdToUpdate) {
-                const existingTask = tasks.find(task => task.id === taskIdToUpdate);
+                const updates: Partial<Task> = {
+                    messages: updatedMessages
+                };
 
-                if (existingTask) {
-                    // Update existing task
-                    const updates: Partial<Task> = {
-                        messages: updatedMessages
-                    };
-
-                    if (message.type === 'workflow' && message.workflow?.name) {
-                        updates.name = message.workflow.name;
-                        updates.workflow = message.workflow;
-                    }
-
-                    updateTask(taskIdToUpdate, updates);
-                } else {
-                    // Create new task
-                    const initialData: Partial<Task> = {
-                        name: (message.type === 'workflow' && message.workflow?.name)
-                            ? message.workflow.name
-                            : `Task ${taskIdToUpdate.slice(0, 8)}`,
-                        workflow: (message.type === 'workflow' && message.workflow)
-                            ? message.workflow
-                            : undefined,
-                        messages: updatedMessages,
-                        status: 'running', // Set to running state on initialization
-                        // Set taskType based on whether it's scheduled task mode
-                        taskType: isTaskDetailMode ? 'scheduled' : 'normal',
-                        scheduledTaskId: isTaskDetailMode ? scheduledTaskIdFromUrl : undefined,
-                        startTime: new Date(), // Record start time
-                    };
-
-                    createTask(taskIdToUpdate, initialData);
+                if (message.type === 'workflow' && message.workflow?.name) {
+                    updates.name = message.workflow.name;
+                    updates.workflow = message.workflow;
                 }
+
+                // For error messages, also update task status
+                if (message.type === 'error') {
+                    updates.status = 'error';
+                }
+
+                // Always update task (will only work if task exists)
+                updateTask(taskIdToUpdate, updates);
             }
 
             // Detect tool call messages, automatically show detail panel
@@ -604,8 +618,23 @@ export default function main() {
         // Add user message to message processor
         const updatedMessages = messageProcessorRef.current.addUserMessage(message.trim());
 
-        // Immediately update current task's messages (if task exists)
-        if (taskIdRef.current) {
+        // If no current task, create temporary task immediately to display user message
+        if (!taskIdRef.current) {
+            const tempTaskId = `temp-${newExecutionId}`;
+            taskIdRef.current = tempTaskId;
+            setCurrentTaskId(tempTaskId);
+
+            // Create temporary task with user message
+            createTask(tempTaskId, {
+                name: 'Processing...',
+                messages: updatedMessages,
+                status: 'running',
+                taskType: isTaskDetailMode ? 'scheduled' : 'normal',
+                scheduledTaskId: isTaskDetailMode ? scheduledTaskIdFromUrl : undefined,
+                startTime: new Date(),
+            });
+        } else {
+            // Update existing task's messages
             updateMessages(taskIdRef.current, updatedMessages);
             // Set existing task to running state
             updateTask(taskIdRef.current, { status: 'running' });
@@ -623,19 +652,24 @@ export default function main() {
         }
 
         try {
-            if (!taskIdRef.current) {
-                // Use IPC to call main thread's EkoService
+            // Check if current task is temporary
+            const isTemporaryTask = taskIdRef.current.startsWith('temp-');
+
+            if (isTemporaryTask) {
+                // Use IPC to call main thread's EkoService to run new task
                 const req = window.api.ekoRun(message.trim());
                 setEkoRequest(req);
                 result = await req;
-                result && setCurrentTaskId(result.taskId);
+                // Note: real taskId will be set via stream callback's replaceTaskId
             } else {
+                // Modify existing task
                 const req = window.api.ekoModify(taskIdRef.current, message.trim());
                 setEkoRequest(req);
                 result = await req;
             }
+
             // Update task status based on result (directly using eko-core status)
-            if (result) {
+            if (result && taskIdRef.current) {
                 updateTask(taskIdRef.current, {
                     status: result.stopReason
                 });

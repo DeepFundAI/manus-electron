@@ -17,7 +17,7 @@ export class MessageProcessor {
   // Process streaming messages and convert to structured display messages
   public processStreamMessage(message: StreamCallbackMessage): DisplayMessage[] {
     console.log('MessageProcessor processing message:', message.type, message);
-    
+
     switch (message.type) {
       case 'workflow':
         this.handleWorkflowMessage(message);
@@ -40,6 +40,9 @@ export class MessageProcessor {
         break;
       case 'agent_result':
         this.handleAgentResultMessage(message);
+        break;
+      case 'error':
+        this.handleErrorMessage(message);
         break;
     }
 
@@ -247,6 +250,30 @@ export class MessageProcessor {
     
     this.messages.push(userMsg);
     return [...this.messages];
+  }
+
+  // Handle error message
+  private handleErrorMessage(message: any) {
+    console.error('Error message received:', message);
+
+    // Create error message as AgentGroupMessage with error status
+    const errorMsg: AgentGroupMessage = {
+      id: uuidv4(),
+      type: 'agent_group',
+      taskId: message.taskId || 'unknown',
+      agentName: 'System',
+      messages: [
+        {
+          type: 'text',
+          id: uuidv4(),
+          content: `❌ Error: ${message.error || 'Unknown error occurred'}\n\n${message.detail || ''}`
+        }
+      ],
+      status: 'error',
+      timestamp: new Date()
+    };
+
+    this.messages.push(errorMsg);
   }
 
   // Get current message list

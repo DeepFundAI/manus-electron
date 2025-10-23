@@ -1,3 +1,32 @@
+// Supported providers
+export type ProviderType = 'deepseek' | 'qwen' | 'google' | 'anthropic' | 'openrouter';
+
+// Model configuration types
+export interface UserModelConfigs {
+  deepseek?: {
+    apiKey?: string
+    baseURL?: string
+    model?: string
+  }
+  qwen?: {
+    apiKey?: string
+    model?: string
+  }
+  google?: {
+    apiKey?: string
+    model?: string
+  }
+  anthropic?: {
+    apiKey?: string
+    model?: string
+  }
+  openrouter?: {
+    apiKey?: string
+    model?: string
+  }
+  selectedProvider?: ProviderType
+}
+
 declare global {
   interface Window {
     api: {
@@ -24,6 +53,14 @@ declare global {
       onEkoStreamMessage: (callback: (message: any) => void) => void
       ekoGetTaskStatus: (taskId: string) => Promise<any>
       ekoCancelTask: (taskId: string) => Promise<any>
+
+      // Model configuration APIs
+      getUserModelConfigs: () => Promise<UserModelConfigs>
+      saveUserModelConfigs: (configs: UserModelConfigs) => Promise<{ success: boolean }>
+      getModelConfig: (provider: ProviderType) => Promise<any>
+      getApiKeySource: (provider: ProviderType) => Promise<'user' | 'env' | 'none'>
+      getSelectedProvider: () => Promise<ProviderType>
+      setSelectedProvider: (provider: ProviderType) => Promise<{ success: boolean }>
     }
     // PDF.js type declarations
     pdfjsLib?: {

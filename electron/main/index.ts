@@ -3,7 +3,6 @@ import {
   app,
   BrowserWindow,
   dialog,
-  ipcMain,
   WebContentsView,
   protocol,
 } from "electron";
@@ -27,9 +26,9 @@ import { EkoService } from "./services/eko-service";
 import { ServerManager } from "./services/server-manager";
 import { MainWindowManager } from "./windows/main-window";
 import { taskScheduler } from "./services/task-scheduler";
-import { taskWindowManager } from "./services/task-window-manager";
 import { windowContextManager, type WindowContext } from "./services/window-context-manager";
 import { cwd } from "node:process";
+import { registerAllIpcHandlers } from "./ipc";
 
 Object.assign(console, log.functions);
 
@@ -328,219 +327,8 @@ app.on("window-all-closed", () => {
   // Scheduled tasks will continue executing in background
 });
 
-ipcMain.handle('get-main-view-screenshot', async (event) => {
-  // Get corresponding detailView based on caller window
-  const context = windowContextManager.getContext(event.sender.id);
-  if (!context || !context.detailView) {
-    throw new Error('DetailView not found for this window');
-  }
-
-  const image = await context.detailView.webContents.capturePage()
-  return {
-    imageBase64: image.toDataURL(),
-    imageType: "image/jpeg",
-  }
-});
+// Register all IPC handlers
+registerAllIpcHandlers();
 
 reloadOnChange();
 // setupAutoUpdater();
-
-// EkoService IPC handlers - supports window isolation
-ipcMain.handle('eko:run', async (event, message: string) => {
-  const context = windowContextManager.getContext(event.sender.id);
-  if (!context || !context.ekoService) {
-    throw new Error('EkoService not found for this window');
-  }
-  return await context.ekoService.run(message);
-});
-
-ipcMain.handle('eko:modify', async (event, taskId: string, message: string) => {
-  try {
-    console.log('IPC eko:modify received:', taskId, message);
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.ekoService) {
-      throw new Error('EkoService not found for this window');
-    }
-    return await context.ekoService.modify(taskId, message);
-  } catch (error: any) {
-    console.error('IPC eko:modify error:', error);
-    throw error;
-  }
-});
-
-ipcMain.handle('eko:execute', async (event, taskId: string) => {
-  try {
-    console.log('IPC eko:execute received:', taskId);
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.ekoService) {
-      throw new Error('EkoService not found for this window');
-    }
-    return await context.ekoService.execute(taskId);
-  } catch (error: any) {
-    console.error('IPC eko:execute error:', error);
-    throw error;
-  }
-});
-
-ipcMain.handle('eko:getTaskStatus', async (event, taskId: string) => {
-  try {
-    console.log('IPC eko:getTaskStatus received:', taskId);
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.ekoService) {
-      throw new Error('EkoService not found for this window');
-    }
-    return await context.ekoService.getTaskStatus(taskId);
-  } catch (error: any) {
-    console.error('IPC eko:getTaskStatus error:', error);
-    throw error;
-  }
-});
-
-ipcMain.handle('eko:cancel-task', async (event, taskId: string) => {
-  try {
-    console.log('IPC eko:cancel-task received:', taskId);
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.ekoService) {
-      throw new Error('EkoService not found for this window');
-    }
-    const result = await context.ekoService.cancleTask(taskId);
-    return { success: true, result };
-  } catch (error: any) {
-    console.error('IPC eko:cancel-task error:', error);
-    throw error;
-  }
-});
-
-// IPC handler for controlling detail view visibility - supports window isolation
-ipcMain.handle('set-detail-view-visible', async (event, visible: boolean) => {
-  try {
-    console.log('IPC set-detail-view-visible received:', visible);
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.detailView) {
-      throw new Error('DetailView not found for this window');
-    }
-
-    context.detailView.setVisible(visible);
-
-    return { success: true, visible };
-  } catch (error: any) {
-    console.error('IPC set-detail-view-visible error:', error);
-    throw error;
-  }
-});
-
-// URL-related IPC handlers - supports window isolation
-ipcMain.handle('get-current-url', async (event) => {
-  try {
-    console.log('IPC get-current-url received');
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context || !context.detailView) {
-      return '';
-    }
-    return context.detailView.webContents.getURL();
-  } catch (error: any) {
-    console.error('IPC get-current-url error:', error);
-    return '';
-  }
-});
-
-// History view management IPC handlers - supports window isolation
-ipcMain.handle('show-history-view', async (event, screenshot: string) => {
-  try {
-    console.log('IPC show-history-view received');
-    const context = windowContextManager.getContext(event.sender.id);
-    if (!context) {
-      throw new Error('Window context not found');
-    }
-
-    // Create history view
-    if (context.historyView) {
-      context.window.contentView.removeChildView(context.historyView);
-    }
-
-    context.historyView = new WebContentsView();
-
-    // Load screenshot content
-    const htmlContent = `
-      <html>
-        <head>
-          <style>
-            body { margin: 0; padding: 0; background: #000; display: flex; align-items: center; justify-content: center; height: 100vh; }
-            img { max-width: 100%; max-height: 100%; object-fit: contain; }
-          </style>
-        </head>
-        <body>
-          <img src="${screenshot}" alt="Historical screenshot" />
-        </body>
-      </html>
-    `;
-
-    await context.historyView.webContents.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(htmlContent)}`);
-
-    // Set history view position (overlay detail panel position)
-    context.window.contentView.addChildView(context.historyView);
-    context.historyView.setBounds({
-      x: 818,
-      y: 264,
-      width: 748,
-      height: 560,
-    });
-
-    return { success: true };
-  } catch (error: any) {
-    console.error('IPC show-history-view error:', error);
-    throw error;
-  }
-});
-
-ipcMain.handle('hide-history-view', async (event) => {
-  try {
-    console.log('IPC hide-history-view received');
-    const context = windowContextManager.getContext(event.sender.id);
-    if (context && context.historyView) {
-      context.window.contentView.removeChildView(context.historyView);
-      context.historyView = null;
-    }
-    return { success: true };
-  } catch (error: any) {
-    console.error('IPC hide-history-view error:', error);
-    throw error;
-  }
-});
-
-// IPC handler for opening task window history panel
-ipcMain.handle('open-task-history', async (_event, taskId: string) => {
-  try {
-    console.log('[IPC] open-task-history received:', taskId);
-
-    // Check if task window already exists
-    let taskWindow = taskWindowManager.getTaskWindow(taskId);
-
-    if (taskWindow) {
-      // Window exists, activate it
-      console.log('[IPC] Task window exists, activating window');
-      taskWindow.window.show();
-      taskWindow.window.focus();
-    } else {
-      // Window doesn't exist, create new window
-      console.log('[IPC] Task window does not exist, creating new window');
-
-      // Generate new executionId (for creating window, won't execute task immediately)
-      const executionId = `view_history_${Date.now()}`;
-
-      // Create task window
-      taskWindow = await taskWindowManager.createTaskWindow(taskId, executionId);
-    }
-
-    // Wait for window content to load, then send open history panel event
-    setTimeout(() => {
-      taskWindow!.window.webContents.send('open-history-panel', { taskId });
-      console.log('[IPC] Sent open-history-panel event to task window');
-    }, 1000); // Delay 1 second to ensure page is loaded
-
-    return { success: true };
-  } catch (error: any) {
-    console.error('[IPC] open-task-history error:', error);
-    throw error;
-  }
-});

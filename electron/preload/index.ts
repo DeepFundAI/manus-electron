@@ -40,6 +40,14 @@ const api = {
   ekoCancelTask: (taskId: string) => ipcRenderer.invoke('eko:cancel-task', taskId),
   onEkoStreamMessage: (callback: (message: any) => void) => ipcRenderer.on('eko-stream-message', (_, message) => callback(message)),
 
+  // Model configuration APIs
+  getUserModelConfigs: () => ipcRenderer.invoke('config:get-user-configs'),
+  saveUserModelConfigs: (configs: any) => ipcRenderer.invoke('config:save-user-configs', configs),
+  getModelConfig: (provider: 'deepseek' | 'qwen' | 'google' | 'anthropic' | 'openrouter') => ipcRenderer.invoke('config:get-model-config', provider),
+  getApiKeySource: (provider: 'deepseek' | 'qwen' | 'google' | 'anthropic' | 'openrouter') => ipcRenderer.invoke('config:get-api-key-source', provider),
+  getSelectedProvider: () => ipcRenderer.invoke('config:get-selected-provider'),
+  setSelectedProvider: (provider: 'deepseek' | 'qwen' | 'google' | 'anthropic' | 'openrouter') => ipcRenderer.invoke('config:set-selected-provider', provider),
+
   // Detail view control APIs
   setDetailViewVisible: (visible: boolean) => ipcRenderer.invoke('set-detail-view-visible', visible),
   // URL retrieval and monitoring APIs

@@ -1,6 +1,8 @@
-# DeepFundAI Browser
+# Manus Electron
 
-An AI-powered intelligent browser built with Next.js and Electron. Features multi-modal AI task execution, scheduled tasks, social media integration, and advanced file management capabilities.
+[English](./README.md) | [简体中文](./README.zh-CN.md)
+
+An AI-powered intelligent browser built with Next.js and Electron. Features multi-modal AI task execution, scheduled tasks, social media integration, and advanced file management capabilities with support for multiple AI providers.
 
 Built with [Next.js](https://nextjs.org) and [Electron](https://electronjs.org).
 
@@ -28,7 +30,7 @@ Before running the application, you need to configure API keys:
 cp .env.template .env.local
 
 # Edit .env.local and fill in your API keys
-# Required: DEEPSEEK_API_KEY, BAILIAN_API_KEY
+# Supported: DEEPSEEK_API_KEY, QWEN_API_KEY, GOOGLE_API_KEY, ANTHROPIC_API_KEY, OPENROUTER_API_KEY
 ```
 
 For detailed configuration instructions, see [CONFIGURATION.md](./docs/CONFIGURATION.md).
@@ -67,12 +69,13 @@ The built application will include your API configuration, so end users don't ne
 
 ## Features
 
-- AI-powered intelligent browser
-- Multi-modal AI task execution
-- Scheduled tasks system
-- Social media integration (Douyin, Xiaohongshu)
-- Speech recognition and text-to-speech
-- File management capabilities
+- **Multiple AI Providers**: Support for DeepSeek, Qwen, Google Gemini, Anthropic Claude, and OpenRouter
+- **UI Configuration**: Configure AI models and API keys directly in the app, no file editing required
+- **AI-Powered Browser**: Intelligent browser with automated task execution
+- **Multi-Modal AI**: Vision and text processing capabilities
+- **Scheduled Tasks**: Create and manage automated recurring tasks
+- **Speech & TTS**: Voice recognition and text-to-speech integration
+- **File Management**: Advanced file operations and management
 
 ## Screenshots
 
@@ -96,12 +99,13 @@ View past tasks with search and playback capabilities.
 
 ![History](./docs/shotscreen/history.png)
 
-## API Services Used
+## Supported AI Providers
 
-- **DeepSeek**: Main AI language model
-- **Alibaba Cloud Bailian**: Vision model and social media services
-- **OpenRouter**: Alternative AI models
-- **Microsoft Azure**: Text-to-speech services
+- **DeepSeek**: deepseek-chat, deepseek-reasoner
+- **Qwen (Alibaba Cloud)**: qwen-max, qwen-plus, qwen-vl-max
+- **Google Gemini**: gemini-1.5-flash, gemini-2.0-flash, gemini-1.5-pro, and more
+- **Anthropic Claude**: claude-3.7-sonnet, claude-3.5-sonnet, claude-3-opus, and more
+- **OpenRouter**: Multiple providers (Claude, GPT, Gemini, Mistral, Cohere, etc.)
 
 ## Documentation
 
