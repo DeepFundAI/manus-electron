@@ -245,6 +245,10 @@ const AgentGroupDisplay = ({
         <div className="flex items-center gap-2">
           {agentMessage.status === 'completed' ? (
             <FinishStatus />
+          ) : agentMessage.status === 'error' ? (
+            <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
+              <span className="text-white text-xs">✕</span>
+            </div>
           ) : (
             <RuningStatus />
           )}
@@ -262,7 +266,7 @@ const AgentGroupDisplay = ({
       {/* Agent execution steps */}
       {!isCollapsed && (
         <div className="agent-steps">
-          {agentMessage.messages.map((message, index) => {
+          {agentMessage.messages.map((message) => {
             return (
               <div key={message.id} className="agent-step">
                 <div className="pl-6 mb-3 text-sm">

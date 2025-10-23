@@ -5,6 +5,7 @@ import { Input, Button } from 'antd'
 import {ImageType, ReportType, SlideType, WebType, SpreadsheetType, VisualizeType, MoreType} from '@/icons/source-type-icons'
 import { ScheduledTaskModal, ScheduledTaskListPanel } from '@/components/scheduled-task'
 import { useScheduledTaskStore } from '@/stores/scheduled-task-store'
+import { ModelConfigBar } from '@/components/ModelConfigBar'
 
 export default function Home() {
     const [query, setQuery] = useState('')
@@ -79,16 +80,28 @@ export default function Home() {
                         <p>I am Jarvis, a robot powered by llm. What can I do for you?</p>
                     </div>
 
-                    {/* Query input box */}
-                    <div className='gradient-border w-[850px] h-[160px] mt-[30px]'>
-                        <Input.TextArea 
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            className='!h-full !bg-tool-call !text-text-01-dark !placeholder-text-12-dark !py-3 !px-4' 
-                            placeholder='Please enter your task'
-                            autoSize={false}
-                        />
+                    {/* Unified Input Area: Model Config + Query Input */}
+                    <div className='gradient-border w-[780px] mt-[30px]' style={{ height: 'auto' }}>
+                        <div className='bg-tool-call rounded-xl w-full h-full'>
+                            {/* Model Configuration Bar */}
+                            <ModelConfigBar />
+
+                            {/* Query input box */}
+                            <div className='h-[160px]'>
+                                <Input.TextArea
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                    className='!h-full !bg-transparent !text-text-01-dark !placeholder-text-12-dark !py-3 !px-4 !border !border-solid'
+                                    placeholder='Please enter your task'
+                                    autoSize={false}
+                                    style={{
+                                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                                        borderWidth: '1px',
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                 </div>
