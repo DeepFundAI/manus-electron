@@ -43,8 +43,11 @@ First, run the development server:
 # Install dependencies
 pnpm install
 
-# Build desktop application client
+# Build desktop application client for mac
 pnpm run build:deps
+
+# Build desktop application client for windows
+pnpm run build:deps:win
 
 # Start web development server
 pnpm run next
@@ -61,8 +64,11 @@ To build the desktop application for distribution:
 # Configure production API keys
 # Edit .env.production file with your actual API keys
 
-# Build the application
+# Build the application for mac
 pnpm run build
+
+# Build the application for windows
+pnpm run build:win
 ```
 
 The built application will include your API configuration, so end users don't need to configure anything.
