@@ -37,7 +37,7 @@ const theme: ThemeConfig = {
     fontSize: 14,
     fontSizeHeading1: 48,          // Large headings
     fontSizeHeading2: 32,          // Medium headings
-    fontFamily: '"Outfit", "Inter", "Nunito Sans", -apple-system, BlinkMacSystemFont, sans-serif',
+    fontFamily: 'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
 
     // Shadows - deeper shadows for glass effect
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',

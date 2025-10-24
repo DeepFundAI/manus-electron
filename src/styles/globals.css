@@ -128,55 +128,46 @@
 }
 
 /* Ant Design Select dropdown customization - Fellou.ai purple theme */
-/* Use custom class for more specific targeting */
-.custom-select-dropdown {
-  background: rgba(8, 12, 16, 0.96) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(145, 75, 241, 0.3) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(145, 75, 241, 0.2) !important;
-}
-
-/* Select options within custom dropdown */
-.custom-select-dropdown .ant-select-item {
+/* Dropdown items styling - global since dropdownStyle only handles container */
+.ant-select-item {
   color: rgba(255, 255, 255, 0.9) !important;
   border-radius: 8px !important;
   margin: 2px 4px !important;
   transition: all 0.2s ease !important;
 }
 
-/* Hover state */
-.custom-select-dropdown .ant-select-item-option-active {
+/* Hover state for dropdown items */
+.ant-select-item-option-active:not(.ant-select-item-option-selected) {
   background: rgba(94, 49, 216, 0.15) !important;
 }
 
 /* Selected state */
-.custom-select-dropdown .ant-select-item-option-selected {
+.ant-select-item-option-selected {
   background: rgba(94, 49, 216, 0.25) !important;
   font-weight: 500 !important;
 }
 
 /* Selected state hover */
-.custom-select-dropdown .ant-select-item-option-selected.ant-select-item-option-active {
+.ant-select-item-option-selected.ant-select-item-option-active {
   background: rgba(94, 49, 216, 0.35) !important;
 }
 
 /* Select box focus state */
-.ant-select-focused .ant-select-selector {
+.custom-select.ant-select-focused .ant-select-selector {
   border-color: rgba(145, 75, 241, 0.4) !important;
   box-shadow: 0 0 0 2px rgba(145, 75, 241, 0.15) !important;
 }
 
 /* Select box hover state */
-.ant-select:not(.ant-select-disabled):not(.ant-select-customize-input):not(.ant-pagination-size-changer):hover .ant-select-selector {
+.custom-select:not(.ant-select-disabled):hover .ant-select-selector {
   border-color: rgba(145, 75, 241, 0.3) !important;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
-  --font-mono: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", monospace;
+  --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -189,7 +180,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 html,

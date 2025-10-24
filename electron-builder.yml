@@ -28,14 +28,14 @@ mac:
   target:
     - target: dmg
       arch: universal
-  identity:  null
+  identity:  Shuai Liu (ZHP9ZM5YMB)
   category: "public.app-category.developer-tools"
   type: "distribution"
   hardenedRuntime: true
   entitlements: "assets/entitlements.mac.plist"
   entitlementsInherit: "assets/entitlements.mac.plist"
   gatekeeperAssess: false
-  # notarize: true
+  notarize: true
 
 win:
   icon: assets/icons/logo.png
