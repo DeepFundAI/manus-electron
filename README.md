@@ -79,6 +79,10 @@ The built application will include your API configuration, so end users don't ne
 
 ## Screenshots
 
+### Start
+
+![Start](./docs/shotscreen/start-loading.png)
+
 ### Home
 Input tasks and let AI execute automatically.
 

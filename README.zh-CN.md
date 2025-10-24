@@ -79,6 +79,10 @@ pnpm run build
 
 ## 截图
 
+### 启动动画
+
+![启动动画](./docs/shotscreen/start-loading.png)
+
 ### 首页
 输入任务，让 AI 自动执行。
 
