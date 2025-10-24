@@ -13,7 +13,7 @@ Built with [Next.js](https://nextjs.org) and [Electron](https://electronjs.org).
 - **UI**: Ant Design + Tailwind CSS
 - **State Management**: Zustand
 - **Storage**: IndexedDB (via electron-store)
-- **AI Agent**: @jarvis-agent (based on [Eko](https://github.com/FellouAI/eko))
+- **AI Agent**: @jarvis-agent (based on [Eko](https://github.com/FellouAI/eko) - production-ready agent framework)
 - **Build Tools**: Vite + TypeScript
 
 ## Development Environment Configuration

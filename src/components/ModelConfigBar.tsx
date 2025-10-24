@@ -174,9 +174,16 @@ export const ModelConfigBar: React.FC = () => {
         <Select
           value={selectedProvider}
           onChange={handleProviderChange}
-          className="flex-1"
+          className="flex-1 custom-select"
           size="middle"
           style={{ minWidth: '160px' }}
+          dropdownStyle={{
+            background: 'rgba(8, 12, 16, 0.96)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(145, 75, 241, 0.3)',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(145, 75, 241, 0.2)',
+          }}
         >
           {PROVIDERS.map(p => (
             <Option key={p.value} value={p.value}>{p.label}</Option>
@@ -186,9 +193,16 @@ export const ModelConfigBar: React.FC = () => {
         <Select
           value={selectedModel}
           onChange={handleModelChange}
-          className="flex-1"
+          className="flex-1 custom-select"
           size="middle"
           style={{ minWidth: '200px' }}
+          dropdownStyle={{
+            background: 'rgba(8, 12, 16, 0.96)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(145, 75, 241, 0.3)',
+            borderRadius: '12px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(145, 75, 241, 0.2)',
+          }}
         >
           {MODELS[selectedProvider]?.map(model => (
             <Option key={model} value={model}>{model}</Option>
@@ -250,7 +264,7 @@ export const ModelConfigBar: React.FC = () => {
                 href={currentProvider?.getKeyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-purple-400 hover:text-purple-300 whitespace-nowrap"
+                className="flex items-center gap-1 text-blue-400 hover:text-blue-300 whitespace-nowrap"
               >
                 <LinkOutlined />
                 Get API Key

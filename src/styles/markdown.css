@@ -27,8 +27,8 @@
   }
 
   sup {
-    color: #636fff;
-    background: #d8dbff;
+    color: #3B82F6;
+    background: rgba(59, 130, 246, 0.15);
     border-radius: 8px;
     height: 16px;
     font-weight: 600;
@@ -44,7 +44,7 @@
     top: 2px;
   }
 
-  /* // Markdown paragraphs */
+  /* Markdown paragraphs */
   p {
     margin-bottom: 8px;
     font-size: 14px;
@@ -53,7 +53,7 @@
     word-wrap: break-word;
   }
 
-  /* // Markdown lists */
+  /* Markdown lists */
   ul,
   ol {
     margin-bottom: 8px;
@@ -71,10 +71,10 @@
 
   li {
     margin-bottom: 8px;
-    /* // text-indent: 0px; */
+    /* text-indent: 0px; */
   }
 
-  /* // Markdown links */
+  /* Markdown links */
   a {
     color: #007bff;
     text-decoration: none;
@@ -84,7 +84,7 @@
     text-decoration: underline;
   }
 
-  /* // Markdown code blocks */
+  /* Markdown code blocks */
   pre {
     padding: 12px;
     border-radius: 6px;
@@ -105,7 +105,7 @@
     font-family: PingFang Medium, PingFang SC, Source Han Sans !important;
   }
 
-  /* // Markdown blockquotes */
+  /* Markdown blockquotes */
   blockquote {
     margin-left: 20px;
     padding-left: 10px;
@@ -113,20 +113,20 @@
     color: #777;
   }
 
-  /* // Markdown horizontal rule */
+  /* Markdown horizontal rule */
   hr {
     border: none;
     border-top: 1px solid #ccc;
     margin: 20px 0;
   }
 
-  /* // Markdown images */
+  /* Markdown images */
   img {
     max-width: 100%;
     height: auto;
   }
 
-  /* // Markdown table */
+  /* Markdown table */
   table {
     width: 100%;
     border-collapse: collapse;
@@ -182,8 +182,8 @@
     }
 
     sup {
-      color: #7e8dff;
-      background: #373863;
+      color: #60A5FA;
+      background: rgba(59, 130, 246, 0.2);
     }
   }
 }

@@ -13,7 +13,7 @@
 - **UI**: Ant Design + Tailwind CSS
 - **状态管理**: Zustand
 - **存储**: IndexedDB (via electron-store)
-- **AI Agent**: @jarvis-agent (基于 [Eko](https://github.com/FellouAI/eko))
+- **AI Agent**: @jarvis-agent (基于 [Eko](https://github.com/FellouAI/eko) - 生产就绪的 Agent 框架)
 - **构建工具**: Vite + TypeScript
 
 ## 开发环境配置
