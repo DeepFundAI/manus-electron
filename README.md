@@ -13,7 +13,7 @@ Built with [Next.js](https://nextjs.org) and [Electron](https://electronjs.org).
 - **UI**: Ant Design + Tailwind CSS
 - **State Management**: Zustand
 - **Storage**: IndexedDB (via electron-store)
-- **AI Agent**: @jarvis-agent (based on [Eko](https://github.com/FellouAI/eko))
+- **AI Agent**: @jarvis-agent (based on [Eko](https://github.com/FellouAI/eko) - production-ready agent framework)
 - **Build Tools**: Vite + TypeScript
 
 ## Development Environment Configuration
@@ -78,6 +78,10 @@ The built application will include your API configuration, so end users don't ne
 - **File Management**: Advanced file operations and management
 
 ## Screenshots
+
+### Start
+
+![Start](./docs/shotscreen/start-loading.png)
 
 ### Home
 Input tasks and let AI execute automatically.

@@ -310,7 +310,10 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
         },
         body: {
           padding: '16px',
-          height: '100%'
+          height: '100%',
+          // Fellou.ai inspired elegant gradient background
+          background: 'linear-gradient(180deg, #1e1c23 0%, #281c39 100%)',
+          backdropFilter: 'blur(16px)',
         }
       }}
       extra={
@@ -355,8 +358,8 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                 currentTaskId === item.id ? 'opacity-80' : 'hover:opacity-70'
               }`}
               style={{
-                backgroundColor: currentTaskId === item.id ? 'rgba(126, 141, 255, 0.1)' : undefined,
-                borderLeft: currentTaskId === item.id ? '3px solid #7E8DFF' : undefined
+                backgroundColor: currentTaskId === item.id ? 'rgba(59, 130, 246, 0.1)' : undefined,
+                borderLeft: currentTaskId === item.id ? '3px solid #3B82F6' : undefined
               }}
               onClick={() => handleSelectItem(item)}
               actions={[

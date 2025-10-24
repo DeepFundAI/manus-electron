@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Typography, Button } from "antd";
 import ReactMarkdown from "react-markdown";
-import { Executing, Browser, Search, DataAnalysis, ExpandCollapse, DeepThinking, FinishStatus, RuningStatus } from '../../icons/deepfundai-icons';
+import { Executing, Browser, Search, DataAnalysis, ExpandCollapse, DeepThinking, FinishStatus, RuningStatus, Atlas } from '../../icons/deepfundai-icons';
 import { DisplayMessage, AgentGroupMessage, ToolAction, AgentMessage } from '../../models';
 
 const { Text } = Typography;
@@ -21,7 +21,8 @@ const WorkflowDisplay = ({ workflow }: { workflow: any }) => {
   return (
     <div className="workflow-display space-y-4">
       <div className='flex items-center gap-2'>
-        <div className='bg-jarvis w-6 h-6 bg-origin-padding bg-no-repeat bg-center bg-size-[50px_50px]'></div> Jarvis
+        <Atlas />
+        <span className="text-lg font-bold">Atlas</span>
       </div>
 
       {/* Thinking process - dark theme style */}
@@ -97,7 +98,7 @@ const ThinkingDisplay = ({ content, isCompleted = false }: { content: string; is
 const StepAgentDisplay = ({ agent, stepNumber }: { agent: any; stepNumber: number }) => {
   return (
     <div className="step-agent-display text-base">
-      {/* Agent information - purple background, status display removed */}
+      {/* Agent information - status display removed */}
       <div className="px-2 border-l-2 border-text-05-dark mb-3">
         <div className="flex items-center gap-1 text-text-05-dark font-semibold ">
           <DeepThinking />

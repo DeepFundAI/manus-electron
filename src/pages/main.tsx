@@ -764,12 +764,12 @@ export default function main() {
                         <div className='h-full border-border-message border flex flex-col rounded-xl'>
                             {/* Detail panel title */}
                             <div className='p-4'>
-                                <h3 className='text-xl font-semibold'>Jarvis's Computer</h3>
+                                <h3 className='text-xl font-semibold'>Atlas's Computer</h3>
                                 <div className='flex flex-col items-start justify-centerce px-5 py-3 gap-3 border-border-message border rounded-md h-[80px] bg-tool-call mt-3'>
                                     {currentTool && (
                                         <>
                                             <div className='border-b w-full border-dashed border-border-message flex items-center'>
-                                                Jarvis is using tool
+                                                Atlas is using tool
                                                 <div className={`w-2 h-2 ml-2 rounded-full ${currentTool.status === 'running' ? 'bg-blue-500 animate-pulse' :
                                                         currentTool.status === 'completed' ? 'bg-green-500' : 'bg-red-500'
                                                     }`}></div>

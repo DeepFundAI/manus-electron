@@ -124,16 +124,20 @@ export const ScheduledTaskListPanel: React.FC = () => {
         }
         open={showListPanel}
         onClose={() => setShowListPanel(false)}
-        width={500}
+        width={400}
         className="scheduled-task-list-panel"
         styles={{
         wrapper: {
           marginTop: '48px', // header height
-          height: 'calc(100vh - 48px)' // subtract header height
+          height: 'calc(100vh - 48px)', // subtract header height
+          borderLeft: '1px solid rgba(94, 49, 216, 0.2)', // Subtle purple border
         },
         body: {
           padding: '16px',
-          height: '100%'
+          height: '100%',
+          // Fellou.ai inspired elegant gradient background
+          background: 'linear-gradient(180deg, #1e1c23 0%, #281c39 100%)',
+          backdropFilter: 'blur(16px)',
         }
       }}
       >

@@ -6,6 +6,7 @@ import {ImageType, ReportType, SlideType, WebType, SpreadsheetType, VisualizeTyp
 import { ScheduledTaskModal, ScheduledTaskListPanel } from '@/components/scheduled-task'
 import { useScheduledTaskStore } from '@/stores/scheduled-task-store'
 import { ModelConfigBar } from '@/components/ModelConfigBar'
+import { ChromeBrowserBackground } from '@/components/fellou/ChromeBrowserBackground'
 
 export default function Home() {
     const [query, setQuery] = useState('')
@@ -71,17 +72,18 @@ export default function Home() {
 
     return (
         <>
+            <ChromeBrowserBackground/>
             <Header />
             <div className='bg-main-view bg-origin-padding bg-no-repeat bg-cover h-[calc(100%_-_48px)] overflow-y-auto text-text-01-dark flex flex-col'>
                 <div className='flex flex-col items-center pt-[130px] w-full h-full overflow-y-auto z-10'>
                     {/* Greeting */}
                     <div className='text-left leading-10 text-text-01-dark text-[28px] font-bold'>
-                        <div>Hi, Buffett</div>
-                        <p>I am Jarvis, a robot powered by llm. What can I do for you?</p>
+                        <div>Hi, DavidSmith</div>
+                        <p>I am Altas, a robot powered by llm. What can I do for you?</p>
                     </div>
 
                     {/* Unified Input Area: Model Config + Query Input */}
-                    <div className='gradient-border w-[780px] mt-[30px]' style={{ height: 'auto' }}>
+                    <div className='gradient-border w-[740px] mt-[30px]' style={{ height: 'auto' }}>
                         <div className='bg-tool-call rounded-xl w-full h-full'>
                             {/* Model Configuration Bar */}
                             <ModelConfigBar />
