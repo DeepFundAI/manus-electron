@@ -87,7 +87,7 @@ export default function Home() {
                             <ModelConfigBar />
 
                             {/* Query input box */}
-                            <div className='h-[160px]'>
+                            <div className='h-[160px] p-4'>
                                 <Input.TextArea
                                     value={query}
                                     onChange={(e) => setQuery(e.target.value)}

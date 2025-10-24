@@ -60,8 +60,8 @@ export default function Header() {
         </div>
       )}
       <div className='flex justify-center items-center gap-4'>
-        {/* Create task button - only show in main window */}
-        {!isTaskDetailMode && (
+        {/* Create task button - only show in home page */}
+        {!isTaskDetailMode && (router.pathname === '/home' || router.pathname === '/') && (
           <Button
             type="text"
             icon={<ScheduledTaskIcon />}
