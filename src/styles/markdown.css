@@ -102,7 +102,7 @@
     font-size: 14px;
     padding: 2px 4px;
     border-radius: 4px;
-    font-family: PingFang Medium, PingFang SC, Source Han Sans !important;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
   }
 
   /* Markdown blockquotes */

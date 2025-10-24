@@ -213,11 +213,11 @@ export default function FileView() {
               <Text type="secondary">Waiting for AI to generate content...</Text>
             </div>
           ) : fileState.content ? (
-            <div 
+            <div
               style={{
                 height: '100%',
                 overflow: 'auto',
-                fontFamily: 'Monaco, "Courier New", monospace',
+                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                 fontSize: '14px',
                 lineHeight: '1.6',
                 whiteSpace: 'pre-wrap',
